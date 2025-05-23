@@ -131,6 +131,10 @@ class LoggerService {
     }
   }
 
+  utils = {
+    chalk
+  };
+
   get spinner() {
     const self = this;
 
@@ -176,5 +180,4 @@ class LoggerService {
   }
 }
 
-export const LoggerColor = chalk;
 export { LoggerService };
