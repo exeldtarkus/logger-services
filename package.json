@@ -4,13 +4,33 @@
   "description": "Simple logger service with colored output using TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },
-  "keywords": [],
+  "keywords": [
+    "logger",
+    "typescript",
+    "chalk",
+    "console",
+    "moment",
+    "colored-logs",
+    "log-service"
+  ],
   "author": "Exel Tarkus",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exeldtarkus/logger-services.git"
+  },
+  "bugs": {
+    "url": "https://github.com/exeldtarkus/logger-services/issues"
+  },
+  "homepage": "https://github.com/exeldtarkus/logger-services#readme",
   "devDependencies": {
     "@types/node": "^22.15.21",
     "typescript": "^5.8.3"
