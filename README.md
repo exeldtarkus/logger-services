@@ -31,13 +31,17 @@ npm install logger-services
 ### 1. Import and Initialize
 
 ```ts
-import { LoggerService, ELogStage } from 'logger-services';
+import {LoggerService, ELogStage, ELogLevels} from 'logger-services';
 
 const logger = new LoggerService({
-  env: 'dev',                // 'dev' | 'uat' | 'staging' | 'prod'
-  loggerPrefix: 'MyApp',     // optional module name prefix
-  app_debug: true            // enables debug logging
+  env: 'dev', // 'dev' | 'uat' | 'staging' | 'prod'
+  loggerPrefix: 'MyApp', // optional module name prefix
+  app_debug: true, // enables debug logging
 });
+
+export {ELogStage, ELogLevels};
+export default logger;
+
 ```
 
 ### 2. Logging Examples
