@@ -1,6 +1,6 @@
 {
   "name": "logger-services",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "Simple logger service with colored output using TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
