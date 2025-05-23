@@ -21,7 +21,7 @@ Simple and flexible logger service written in TypeScript. Provides environment-a
 ## 📦 Installation
 
 ```bash
-npm install logger-service-ts
+npm install logger-services
 ````
 
 ---
@@ -31,7 +31,7 @@ npm install logger-service-ts
 ### 1. Import and Initialize
 
 ```ts
-import { LoggerService, ELogStage } from 'logger-service-ts';
+import { LoggerService, ELogStage } from 'logger-services-ts';
 
 const logger = new LoggerService({
   env: 'dev',                // 'dev' | 'uat' | 'staging' | 'prod'
