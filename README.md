@@ -120,23 +120,3 @@ npm run build
 ```
 
 ---
-
-## 📤 Publish to NPM
-
-```bash
-npm version patch   # or minor / major
-npm publish
-```
-
----
-
-## 📝 License
-
-MIT License © 2025 YourName
-
-```
-
----
-
-Silakan salin isi di atas ke dalam file bernama `README.md` di root project kamu. Kalau kamu ingin saya bantu buatkan juga dalam file `.md` dan kirim, beri tahu saja ya!
-```
