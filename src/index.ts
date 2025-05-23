@@ -46,16 +46,17 @@ class LoggerService {
     this.app_debug = config.app_debug ?? false;
   }
 
-  private formatPrefix(level: ELogLevels): string {
+  private formatPrefix(level: ELogLevels, padded = false): string {
     const envPrefix = this.env ? `[${this.env}] - ` : '';
     const servicePrefix = this.loggerPrefix ? `${this.loggerPrefix} - ` : '';
     const levelPrefix = `${level} |`;
-    return `${envPrefix}${servicePrefix}${levelPrefix}`.padEnd(40);
+    const fullPrefix = `${envPrefix}${servicePrefix}${levelPrefix}`;
+    return padded ? fullPrefix.padEnd(40) : fullPrefix;
   }
 
   private formatSpinnerMessage(level: ELogLevels, message: string): string {
     const pad = '    ';
-    const prefix = chalk.green(this.formatPrefix(level));
+    const prefix = chalk.green(this.formatPrefix(level, true));
     return `${pad}${prefix}${message}`;
   }
 
@@ -82,7 +83,7 @@ class LoggerService {
 
     const fullStr = mappingStr.join(' - ');
     const timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
-    const prefix = this.formatPrefix(level);
+    const prefix = this.formatPrefix(level, false);
 
     switch (level) {
       case ELogLevels.info:
