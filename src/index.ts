@@ -26,6 +26,7 @@ class LoggerService {
   private loggerPrefix: ILoggerConfig['loggerPrefix'] = null;
   private app_debug: boolean = false;
   private spinnerInstance: Ora | null = null;
+  private spinnerTimeout: NodeJS.Timeout | null = null;
 
   constructor(config?: ILoggerConfig, clear?: boolean) {
     if (config) {
@@ -47,7 +48,11 @@ class LoggerService {
   }
 
   private formatPrefix(level: ELogLevels): string {
-    return `${level} |`;
+    const levelStr = `${level} |`;
+    const envStr = this.env ? `[${this.env}]` : '';
+    const prefixStr = this.loggerPrefix ?? '';
+    const detail = [envStr, prefixStr].filter(Boolean).join(' - ');
+    return detail ? `${levelStr} ${detail} -` : levelStr;
   }
 
   private formatSpinnerMessage(level: ELogLevels, message: string): string {
@@ -92,10 +97,7 @@ class LoggerService {
         }
         break;
       case ELogLevels.error:
-        return console.log(
-          chalk.red(`${prefix}[${timestamp}]`),
-          fullStr
-        );
+        return console.log(chalk.red(`${prefix} [${timestamp}]`), fullStr);
       default:
         return console.log(chalk.red('[ERROR] - [logLevel] - [NOT FOUND]'));
     }
@@ -117,37 +119,54 @@ class LoggerService {
     return this.loggerConfig(ELogLevels.debug, ...str);
   }
 
+  private handleTimeout(timeout?: number) {
+    if (this.spinnerTimeout) clearTimeout(this.spinnerTimeout);
+    if (timeout && timeout > 0) {
+      this.spinnerTimeout = setTimeout(() => {
+        if (this.spinnerInstance && this.spinnerInstance.isSpinning) {
+          this.spinnerInstance.stop();
+          this.spinnerInstance = null;
+        }
+      }, timeout);
+    }
+  }
+
   get spinner() {
     const self = this;
 
     return {
-      start(text: string) {
+      start(text: string, timeout?: number) {
         self.spinnerInstance = ora({
           text: self.formatSpinnerMessage(ELogLevels.info, text),
         }).start();
+        self.handleTimeout(timeout);
       },
-      update(text: string) {
+      update(text: string, timeout?: number) {
         if (self.spinnerInstance) {
           self.spinnerInstance.text = self.formatSpinnerMessage(ELogLevels.info, text);
+          self.handleTimeout(timeout);
         }
       },
-      success(text?: string) {
+      success(text?: string, timeout?: number) {
         if (self.spinnerInstance) {
           self.spinnerInstance.succeed(
             self.formatSpinnerMessage(ELogLevels.info, text ?? '')
           );
           self.spinnerInstance = null;
+          self.handleTimeout(timeout);
         }
       },
-      fail(text?: string) {
+      fail(text?: string, timeout?: number) {
         if (self.spinnerInstance) {
           self.spinnerInstance.fail(
             self.formatSpinnerMessage(ELogLevels.error, text ?? '')
           );
           self.spinnerInstance = null;
+          self.handleTimeout(timeout);
         }
       },
       stop() {
+        if (self.spinnerTimeout) clearTimeout(self.spinnerTimeout);
         if (self.spinnerInstance) {
           self.spinnerInstance.stop();
           self.spinnerInstance = null;
