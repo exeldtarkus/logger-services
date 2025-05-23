@@ -21,9 +21,9 @@ class LoggerService {
 
   constructor(
     config?: {
-      env: 'dev' | 'uat' | 'staging' | 'prod' | null;
-      loggerPrefix: string | null;
-      app_debug: boolean;
+      env?: 'dev' | 'uat' | 'staging' | 'prod' | null;
+      loggerPrefix?: string | null;
+      app_debug?: boolean;
     },
     clear?: boolean,
   ) {
