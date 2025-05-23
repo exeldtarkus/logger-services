@@ -55,8 +55,8 @@ class LoggerService {
     return detail ? `${levelStr} ${detail} -` : levelStr;
   }
 
-  private formatSpinnerMessage(level: ELogLevels, message: string): string {
-    const pad = '   ';
+  private formatSpinnerMessage(level: ELogLevels, message: string, isSuccessOrFail: boolean = false): string {
+    const pad = isSuccessOrFail ? '' : '   ';
     const prefix = chalk.green(this.formatPrefix(level));
     return `${pad}${prefix} ${message}`;
   }
@@ -154,7 +154,7 @@ class LoggerService {
       success(text?: string, timeout?: number) {
         if (self.spinnerInstance) {
           self.spinnerInstance.succeed(
-            self.formatSpinnerMessage(ELogLevels.info, text ?? '')
+            self.formatSpinnerMessage(ELogLevels.info, text ?? '', true) // Removing padding for success
           );
           self.spinnerInstance = null;
           self.handleTimeout(timeout);
@@ -163,7 +163,7 @@ class LoggerService {
       fail(text?: string, timeout?: number) {
         if (self.spinnerInstance) {
           self.spinnerInstance.fail(
-            self.formatSpinnerMessage(ELogLevels.error, text ?? '')
+            self.formatSpinnerMessage(ELogLevels.error, text ?? '', true) // Removing padding for fail
           );
           self.spinnerInstance = null;
           self.handleTimeout(timeout);
