@@ -111,4 +111,5 @@ class LoggerService {
   }
 }
 
+export const LoggerColor = chalk;
 export { LoggerService };
