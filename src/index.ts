@@ -55,7 +55,7 @@ class LoggerService {
         if (itemStr instanceof Error) {
           convertToString = itemStr.stack || itemStr.message;
         } else if (typeof itemStr !== 'string') {
-          convertToString = JSON.stringify(itemStr, null, 2);
+          convertToString = JSON.stringify(itemStr, null);
         } else {
           convertToString = itemStr;
         }
