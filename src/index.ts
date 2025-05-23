@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import moment from 'moment';
+import ora, { Ora } from 'ora';
 
 export enum ELogLevels {
   error = '[ERROR]',
@@ -15,7 +16,7 @@ export enum ELogStage {
 }
 
 export interface ILoggerConfig {
-  env?: 'dev' | 'uat' | 'staging' | 'prod' | null;
+  env?: 'dev' | 'uat' | 'staging' | 'prod' | null | string;
   loggerPrefix?: string | null;
   app_debug?: boolean;
 }
@@ -24,6 +25,7 @@ class LoggerService {
   private env: ILoggerConfig['env'] = null;
   private loggerPrefix: ILoggerConfig['loggerPrefix'] = null;
   private app_debug: boolean = false;
+  private spinnerInstance: Ora | null = null;
 
   constructor(config?: ILoggerConfig, clear?: boolean) {
     if (config) {
@@ -44,7 +46,20 @@ class LoggerService {
     this.app_debug = config.app_debug ?? false;
   }
 
-  private loggerConfig(logLevel: ELogLevels, ...str: any[]) {
+  private formatPrefix(level: ELogLevels): string {
+    const envPrefix = this.env ? `[${this.env}] - ` : '';
+    const servicePrefix = this.loggerPrefix ? `${this.loggerPrefix} - ` : '';
+    const levelPrefix = `${level} |`;
+    return `${envPrefix}${servicePrefix}${levelPrefix}`.padEnd(40);
+  }
+
+  private formatSpinnerMessage(level: ELogLevels, message: string): string {
+    const pad = '    ';
+    const prefix = chalk.green(this.formatPrefix(level));
+    return `${pad}${prefix}${message}`;
+  }
+
+  private loggerConfig(level: ELogLevels, ...str: any[]) {
     if (str.length === 0) return;
 
     const mappingStr: string[] = [];
@@ -67,26 +82,21 @@ class LoggerService {
 
     const fullStr = mappingStr.join(' - ');
     const timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
+    const prefix = this.formatPrefix(level);
 
-    const prefix = [
-      this.env ? `[${this.env}] -` : '',
-      this.loggerPrefix ? `${this.loggerPrefix} -` : '',
-    ].join(' ');
-
-    switch (logLevel) {
+    switch (level) {
       case ELogLevels.info:
-        return console.log(chalk.green(`${logLevel} |`), prefix, fullStr);
+        return console.log(chalk.green(prefix), fullStr);
       case ELogLevels.warn:
-        return console.log(chalk.yellow(`${logLevel} |`), prefix, fullStr);
+        return console.log(chalk.yellow(prefix), fullStr);
       case ELogLevels.debug:
-        if (this.app_debug === true) {
-          return console.log(chalk.magenta(`${logLevel} |`), prefix, fullStr);
+        if (this.app_debug) {
+          return console.log(chalk.magenta(prefix), fullStr);
         }
         break;
       case ELogLevels.error:
         return console.log(
-          chalk.red(`${logLevel} - [${timestamp}] |`),
-          prefix,
+          chalk.red(`${prefix}[${timestamp}]`),
           fullStr
         );
       default:
@@ -108,6 +118,45 @@ class LoggerService {
 
   debug(...str: any[]) {
     return this.loggerConfig(ELogLevels.debug, ...str);
+  }
+
+  get spinner() {
+    const self = this;
+
+    return {
+      start(text: string) {
+        self.spinnerInstance = ora({
+          text: self.formatSpinnerMessage(ELogLevels.info, text),
+        }).start();
+      },
+      update(text: string) {
+        if (self.spinnerInstance) {
+          self.spinnerInstance.text = self.formatSpinnerMessage(ELogLevels.info, text);
+        }
+      },
+      success(text?: string) {
+        if (self.spinnerInstance) {
+          self.spinnerInstance.succeed(
+            self.formatSpinnerMessage(ELogLevels.info, text ?? '')
+          );
+          self.spinnerInstance = null;
+        }
+      },
+      fail(text?: string) {
+        if (self.spinnerInstance) {
+          self.spinnerInstance.fail(
+            self.formatSpinnerMessage(ELogLevels.error, text ?? '')
+          );
+          self.spinnerInstance = null;
+        }
+      },
+      stop() {
+        if (self.spinnerInstance) {
+          self.spinnerInstance.stop();
+          self.spinnerInstance = null;
+        }
+      }
+    };
   }
 }
 
