@@ -31,7 +31,7 @@ npm install logger-services
 ### 1. Import and Initialize
 
 ```ts
-import { LoggerService, ELogStage } from 'logger-services-ts';
+import { LoggerService, ELogStage } from 'logger-services';
 
 const logger = new LoggerService({
   env: 'dev',                // 'dev' | 'uat' | 'staging' | 'prod'
