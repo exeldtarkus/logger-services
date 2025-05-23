@@ -16,7 +16,7 @@ export enum ELogStage {
 }
 
 export interface ILoggerConfig {
-  env?: 'dev' | 'uat' | 'staging' | 'prod' | null | string;
+  env?: 'dev' | 'uat' | 'staging' | 'prod' | null;
   loggerPrefix?: string | null;
   app_debug?: boolean;
 }
@@ -46,18 +46,14 @@ class LoggerService {
     this.app_debug = config.app_debug ?? false;
   }
 
-  private formatPrefix(level: ELogLevels, padded = false): string {
-    const envPrefix = this.env ? `[${this.env}] - ` : '';
-    const servicePrefix = this.loggerPrefix ? `${this.loggerPrefix} - ` : '';
-    const levelPrefix = `${level} |`;
-    const fullPrefix = `${envPrefix}${servicePrefix}${levelPrefix}`;
-    return padded ? fullPrefix.padEnd(40) : fullPrefix;
+  private formatPrefix(level: ELogLevels): string {
+    return `${level} |`;
   }
 
   private formatSpinnerMessage(level: ELogLevels, message: string): string {
-    const pad = '    ';
-    const prefix = chalk.green(this.formatPrefix(level, true));
-    return `${pad}${prefix}${message}`;
+    const pad = '   ';
+    const prefix = chalk.green(this.formatPrefix(level));
+    return `${pad}${prefix} ${message}`;
   }
 
   private loggerConfig(level: ELogLevels, ...str: any[]) {
@@ -83,7 +79,7 @@ class LoggerService {
 
     const fullStr = mappingStr.join(' - ');
     const timestamp = moment().format('YYYY-MM-DD HH:mm:ss');
-    const prefix = this.formatPrefix(level, false);
+    const prefix = this.formatPrefix(level);
 
     switch (level) {
       case ELogLevels.info:
