@@ -1,0 +1,22 @@
+{
+  "name": "logger-service",
+  "version": "1.0.0",
+  "description": "Simple logger service with colored output using TypeScript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [],
+  "author": "Exel Tarkus",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "moment": "^2.30.1"
+  }
+}
