@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import moment from 'moment';
 import ora, { Ora } from 'ora';
 
