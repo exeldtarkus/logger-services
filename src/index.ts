@@ -154,7 +154,7 @@ class LoggerService {
       success(text?: string, timeout?: number) {
         if (self.spinnerInstance) {
           self.spinnerInstance.succeed(
-            self.formatSpinnerMessage(ELogLevels.info, text ?? '', true) // Removing padding for success
+            self.formatSpinnerMessage(ELogLevels.info, text ?? '', true)
           );
           self.spinnerInstance = null;
           self.handleTimeout(timeout);
